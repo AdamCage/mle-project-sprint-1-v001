@@ -11,11 +11,13 @@
 В данном разделе указываются пути до файлов с кодом всех DAG, а также названия функций DAG для этапов 1 и 2 проекта.
 
 #### Путь до файлов с кодом DAG:
+
 /part1_airflow
 └── dags
     └── yandex_real_estate_ds.py
 
 ### 2. Файлы с Python-кодом для этапов DVC-пайплайна
+
 /part2_dvc
 └── scripts
     ├── load_data.py
@@ -23,6 +25,7 @@
     └── evaluate_model.py
 
 ### 3. Файлы с конфигурацией DVC-пайплайна
+
 /part2_dvc
 ├── dvc.yaml
 ├── dvc.lock
