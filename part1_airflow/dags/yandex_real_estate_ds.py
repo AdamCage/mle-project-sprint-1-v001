@@ -1,7 +1,11 @@
 # dags/yandex_real_estate_ds.py
 
 import pendulum
+import pandas as pd
+import numpy as np
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.decorators import dag, task
+
 from callbacks.messages import *
 from preprocessing.anomalies_detection import *
 
@@ -16,11 +20,6 @@ from preprocessing.anomalies_detection import *
     tags=["ETL", "project1", "yandex", "real_estate"]
 )
 def yandex_real_estate_ds():
-    import pandas as pd
-    import numpy as np
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
-
-
     @task()
     def create_table():
         from sqlalchemy import Table, Column, Float, Integer, MetaData, \
@@ -125,11 +124,18 @@ def yandex_real_estate_ds():
         features2drop = ["studio", "is_anomaly"]
 
         data[b_features] = data[b_features].astype("int64")
+
+        data = data.dropna()
         
         data = data.drop_duplicates(
             subset=data.columns.drop(ids_colums)
         )
         
+        # Отбросим квартиры, стоимость которых не описывается имеющимися данными:
+        # либо слишком дешево (до 1 млн. руб.), либо слишком дорого (свыше 150 млн. руб.),
+        # поскольку стоимость таких квартир зависит от информации, отсуствующей в данных:
+        # исторические дома и кваритры знаменитых людей, особое расположение, особый ремонт
+        # или положение собственника и т.д.
         data = (
             data[
                 (data["price"] >= 1e+6)

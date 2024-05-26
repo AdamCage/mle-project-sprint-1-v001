@@ -1,12 +1,11 @@
 # scripts/evaluate_model.py
 
-import joblib
 import json
-import yaml
 import os
 
+import joblib
+import yaml
 import pandas as pd
-
 from sklearn.model_selection import StratifiedKFold, cross_validate
 
 
