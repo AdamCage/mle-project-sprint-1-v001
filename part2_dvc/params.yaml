@@ -1,0 +1,36 @@
+# params.yaml
+
+ds:
+  name: 'data'
+  ext: 'csv'
+  sep: '|'
+  ids:
+    - 'id'
+    - 'building_id'
+    - 'flat_id'
+  target:
+    - 'price'
+  q_features:
+    - 'build_year'
+    - 'latitude'
+    - 'longitude'
+    - 'ceiling_height'
+    - 'flats_count'
+    - 'floors_total'
+    - 'floor'
+    - 'kitchen_area'
+    - 'living_area'
+    - 'rooms'
+  cat_features:
+    - 'building_type_int'
+  features2drop:
+    - 'studio'
+    - 'is_apartment'
+    - 'has_elevator'
+ml:
+  random_state: 42
+  model_name: 'baseline_model'
+  ext: 'pkl'
+  n_splits: 10
+  metrics: ['neg_mean_absolute_error', 'neg_mean_squared_error', 'neg_root_mean_squared_error', 'r2']
+  n_jobs: -1

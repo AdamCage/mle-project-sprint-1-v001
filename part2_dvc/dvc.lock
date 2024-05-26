@@ -1,0 +1,167 @@
+schema: '2.0'
+stages:
+  get_data:
+    cmd: python scripts/load_data.py
+    deps:
+    - path: scripts/load_data.py
+      hash: md5
+      md5: cb6bfdd6598eefbe7c53b12741c4a598
+      size: 1246
+    params:
+      params.yaml:
+        ds:
+          name: data
+          ext: csv
+          sep: '|'
+          ids:
+          - id
+          - building_id
+          - flat_id
+          target:
+          - price
+          q_features:
+          - build_year
+          - latitude
+          - longitude
+          - ceiling_height
+          - flats_count
+          - floors_total
+          - floor
+          - kitchen_area
+          - living_area
+          - rooms
+          cat_features:
+          - building_type_int
+          features2drop:
+          - studio
+          - is_apartment
+          - has_elevator
+    outs:
+    - path: data/data.csv
+      hash: md5
+      md5: 105495410c096259dfd2b626f0a90638
+      size: 9294685
+      cloud:
+        dvc_storage:
+          etag: 105495410c096259dfd2b626f0a90638
+          version_id: 00061958AD6F3048
+  fit_model:
+    cmd: python scripts/fit_bs_model.py
+    deps:
+    - path: data/data.csv
+      hash: md5
+      md5: 105495410c096259dfd2b626f0a90638
+      size: 9294685
+    - path: scripts/fit_bs_model.py
+      hash: md5
+      md5: 2aee6961ababfecba08f20718762e342
+      size: 1522
+    params:
+      params.yaml:
+        ds:
+          name: data
+          ext: csv
+          sep: '|'
+          ids:
+          - id
+          - building_id
+          - flat_id
+          target:
+          - price
+          q_features:
+          - build_year
+          - latitude
+          - longitude
+          - ceiling_height
+          - flats_count
+          - floors_total
+          - floor
+          - kitchen_area
+          - living_area
+          - rooms
+          cat_features:
+          - building_type_int
+          features2drop:
+          - studio
+          - is_apartment
+          - has_elevator
+        ml:
+          random_state: 42
+          model_name: baseline_model
+          ext: pkl
+          n_splits: 10
+          metrics:
+          - neg_mean_absolute_error
+          - neg_mean_squared_error
+          - neg_root_mean_squared_error
+          - r2
+          n_jobs: -1
+    outs:
+    - path: models/baseline_model.pkl
+      hash: md5
+      md5: 2a17e0f1416a80ff1888dc3b800d6469
+      size: 3646
+      cloud:
+        dvc_storage:
+          etag: 2a17e0f1416a80ff1888dc3b800d6469
+          version_id: 00061958AD6A120F
+  evaluate_model:
+    cmd: python scripts/evaluate_model.py
+    deps:
+    - path: models/baseline_model.pkl
+      hash: md5
+      md5: 2a17e0f1416a80ff1888dc3b800d6469
+      size: 3646
+    - path: scripts/evaluate_model.py
+      hash: md5
+      md5: 187a7389bf66156d32f6d1aa1cc1aeaa
+      size: 1279
+    params:
+      params.yaml:
+        ds:
+          name: data
+          ext: csv
+          sep: '|'
+          ids:
+          - id
+          - building_id
+          - flat_id
+          target:
+          - price
+          q_features:
+          - build_year
+          - latitude
+          - longitude
+          - ceiling_height
+          - flats_count
+          - floors_total
+          - floor
+          - kitchen_area
+          - living_area
+          - rooms
+          cat_features:
+          - building_type_int
+          features2drop:
+          - studio
+          - is_apartment
+          - has_elevator
+        ml:
+          random_state: 42
+          model_name: baseline_model
+          ext: pkl
+          n_splits: 10
+          metrics:
+          - neg_mean_absolute_error
+          - neg_mean_squared_error
+          - neg_root_mean_squared_error
+          - r2
+          n_jobs: -1
+    outs:
+    - path: cv_results/baseline_model_cv_res.json
+      hash: md5
+      md5: 09beb6d4d3dfb782f167f9e25b8e923b
+      size: 207
+      cloud:
+        dvc_storage:
+          etag: 09beb6d4d3dfb782f167f9e25b8e923b
+          version_id: 00061958AD6BC1B1

@@ -1,0 +1,31 @@
+# dvc.yaml
+
+stages:
+  get_data:
+    cmd: python scripts/load_data.py
+    deps:
+      - scripts/load_data.py
+    params:
+      - ds
+    outs:
+      - data/data.csv
+  fit_model:
+    cmd: python scripts/fit_bs_model.py
+    deps:
+      - data/data.csv
+      - scripts/fit_bs_model.py
+    params:
+      - ds
+      - ml
+    outs:
+      - models/baseline_model.pkl
+  evaluate_model:
+    cmd: python scripts/evaluate_model.py
+    deps:
+      - models/baseline_model.pkl
+      - scripts/evaluate_model.py
+    params:
+      - ds
+      - ml
+    outs:
+      - cv_results/baseline_model_cv_res.json
